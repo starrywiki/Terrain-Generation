@@ -16,6 +16,9 @@
 
 使用朴素的柏林噪声生成一片地图，chunk大小至少为16，至少生成4 * 4个chunk
 
+<center class ='img'>
+<img title="Naive Perlin" src="https://pic1.imgdb.cn/item/685f65ff58cb8da5c879bf62.png" width="75%">
+</center>
 评分标准: 注意关注生成的地形在晶格边缘附近有没有突变（明显不自然的“人工”痕迹）
 Hint: 如果怎么都调不出来，看看是不是没有用fade函数进行平滑
 
@@ -24,6 +27,10 @@ $$ fade(x) = 6 x^5 - 15 x^4 + 10 x^3 $$
 ### Task2: Octaveal 2D Perlin and spline method
 
 由于一层柏林噪声看起来过于平滑，因此请使用课上讲的多层噪声叠加的方法生成一片更加“层峦叠嶂”的地形，此外，需要使用样条方法提供各种地形的预设，附在Report中
+
+<center class ='img'>
+<img title="Naive Perlin" src="https://pic1.imgdb.cn/item/685f65ae58cb8da5c879bd16.png" width="75%">
+</center>
 
 评分标准：Octaveal部分关注实现效果是否比起Task1有明显提升，要求在报告中附上你的几个Spline表，并且要求提供几种特定地形的预设，如高原、山脉、平原等
 
