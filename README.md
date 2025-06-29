@@ -79,12 +79,29 @@ datapacks
   之前在 `gen.py` 中所生成的指令
   
   
-### Testing Your Code
+### Testing before you start coding
 
 在你开始做 **Task1** 之前，你可以先进入游戏，然后手动试试你的datapack有没有正确地载入：
-1. 进入你刚刚创建的世界，在命令行中输入
+1. 手动向test.mcfunction中写入一行指令，比如 `fill 0 -5 0 10 5 10 minecraft:dirt`
+2. 进入你刚刚创建的世界，在命令行中输入
 > /reload
+3. 稍等几秒后，你应该会看到蓝色的"Datapack has been loaded!"，也就是load.mcfunction中写的内容，如果没有看到这行字，说明载入失败，要么你不小心动了其他文件，要么你test.mcfunction中存在不合法的指令，如果遇到这个问题且自己无法解决，请咨询TA
+4. 在命令行中输入
+> /function std:test
+5. 由于这里只有一条指令，所以执行的应该很快，你应该立刻就能看到"已加载std::test中的1条指令"，并且在世界中生成了一坨泥土
 
+如果以上步骤都没有问题，那么你就可以开始尝试实现你的Perlin Noise类了，你可以尝试分步地调试，每做一点就测试一下，我在 `utils.py` 中为你提供了一个可视化的函数，只需在python中测试，而不用打开Minecraft
+
+### Generating the Terrain
+
+当你实现完地形生成的部分后，你可以用如下方法在MC中生成一块区域
+1. 在wsl中进入 /functions 文件夹
+> cd ./data/std/functions
+2. 运行 gen.py
+> python gen.py
+3. 此时test.mcfunction中应该已经被写入了很多东西，现在重复先前已经说过的步骤即可，注意，运行 `/function std:test` 后的等待时间取决于你的指令数，如果你的指令数非常多（接近1M行），那么大概需要等待1-2分钟的样子。实际上对于这类问题，有一种基于贪心的优化方案来大幅减少指令数，不过我并没有在本次项目中实现（能用就行
+
+为了在截图时保证图片的完整性，请把游戏中的云关掉（esc-选项-视频设置-云:关）
 
 
 ## Grading Policy
@@ -112,3 +129,10 @@ datapacks
 * Report + (Video / CR): 10%
   - 为了让我记得你的实现效果大概如何，请你提交一份report讲一讲你Task3的实现细节，pdf格式，一些基础的东西就不用讲了，抓住最关键的部分即可，适当加入一些用于解释的图片
   - 另外，为了查看你的实现效果具体怎样，请你另外提交一份演示视频，展示你的Task2和Task3的运行过程，需要从运行python文件开始录制屏幕（不要用手机录屏），主要不是为了看视频的美观程度，而是验证一下真实性。不过如果你不想录视频的话，可以找我线下演示运行一遍。
+
+
+## Outro
+
+如果在“配环境”方面遇到任何问题，请立即联系TA
+
+Good Luck, Have Fun!
