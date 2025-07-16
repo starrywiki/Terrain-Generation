@@ -62,22 +62,46 @@ noise_array = np.zeros((x_max, z_max))
 top_array = np.zeros((x_max, z_max))
 
 # Generate the perlin noise array, with max_octaves = 3
-PerlinNoiseArray = GeneratePerlinNoiseArray(3, lattice_size=4, nmap=128)
+PerlinNoiseArray = GeneratePerlinNoiseArray(
+    seed_=789, octaves=3, lattice_size=4, nmap=128
+)
 
-# perlin = PerlinNoise(seed=789, lattice_size=8, nmap=64)
+transition_start = 0.08  # 低于此值为山脉
+transition_end = 0.63  # 高于此值为山峰
 
 for x in range(0, x_max):
     if x % 32 == 0:
         print("x = {}".format(x))
     for z in range(0, z_max):
         # noise = perlin.get_perlin(x, z)
-        noise = get_perlin_octave(x, z, PerlinNoiseArray)
-        # noise = PerlinNoiseArray[1].get_perlin(x, z)
-        # height = int(noise * 80.0 + 5)
-        height = int(spline(noise, spline_table_plataeu))
+        noise1 = get_perlin_octave(x, z, PerlinNoiseArray)
+        peaks_height = int(noise1 * 300.0)
+        mount_height = int(noise1 * 60 + 13)
+        if noise1 > transition_end:
+            final_height = peaks_height
+        elif noise1 < transition_start:
+            final_height = mount_height
+        else:
+            alpha = (noise1 - transition_start) / (transition_end - transition_start)
+            smooth_alpha = fade(alpha)
+            final_height = lerp(mount_height, peaks_height, smooth_alpha)
+            # height = int(spline(noise, spline_table_plataeu))
+        height_array[x][z] = int(final_height)
 
-        height_array[x][z] = height
-        noise_array[x][z] = noise
+print("Base terrain generated. Now applying post-processing layers...")
+
+
+# 强化山峰和山谷，让地形特征更明显
+height_array = apply_peaks_and_valleys(height_array, intensity=1.2)
+height_array = apply_erosion(height_array, iterations=8, strength=0.5)
+
+
+for x in range(0, x_max):
+    if x % 32 == 0:
+        print("x = {}".format(x))
+    for z in range(0, z_max):
+        # 从处理后的数组中获取最终高度，并转为整数
+        height = int(height_array[x][z])
         water_covered = False
 
         fill(x, -10, height, z, "stone")

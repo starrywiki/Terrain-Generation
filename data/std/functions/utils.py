@@ -3,6 +3,53 @@ from mpl_toolkits.mplot3d import Axes3D
 import scipy.ndimage
 import numpy as np
 import random
+import scipy.ndimage  # 确保在文件顶部导入这个库
+
+
+def apply_erosion(height_map, iterations, strength):
+
+    print("  Applying Erosion...")
+    eroded_map = np.copy(height_map)  # 我们在副本上操作，不破坏原始数据
+
+    # 创建一个3x3的卷积核，代表当前点和它周围的8个邻居
+    kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
+
+    for _ in range(iterations):
+        # 使用scipy的卷积功能，快速计算每个点与邻居的高度差
+        neighbor_height_diffs = scipy.ndimage.convolve(
+            eroded_map, kernel, mode="constant", cval=0
+        )
+
+        # 计算每个点应该流失的高度总量,只向比自己低的邻居流失高度
+        height_loss = (
+            np.maximum(0, eroded_map * 8 - neighbor_height_diffs) * strength / 8
+        )
+
+        # 更新地形
+        eroded_map -= height_loss
+
+    return eroded_map
+
+
+def apply_peaks_and_valleys(height_map, intensity):
+
+    print("  Applying Peaks and Valleys...")
+    # 将高度归一化到-1到1之间
+    mean_height = np.mean(height_map)
+    max_deviation = np.max(np.abs(height_map - mean_height))
+
+    if max_deviation == 0:
+        return height_map
+
+    normalized_map = (height_map - mean_height) / max_deviation
+    scaled_map = normalized_map * intensity
+    transformed_map = np.divide(scaled_map, (1 + np.abs(scaled_map)))
+
+    # 将变换后的值重新映射回原来的高度范围
+    new_map = transformed_map * max_deviation + mean_height
+
+    return new_map
+
 
 # Utility Functions for Minecraft Commands
 f = open("test.mcfunction", "w")

@@ -73,12 +73,14 @@ class PerlinNoise:
 ### Hint: Use multiple perlin noise generators with different lattice sizes and nmap
 
 
-def GeneratePerlinNoiseArray(octaves: int, lattice_size: int, nmap: int) -> list:
+def GeneratePerlinNoiseArray(
+    seed_: int, octaves: int, lattice_size: int, nmap: int
+) -> list:
     ret = []
     for i in range(octaves):
         ls = lattice_size * (2**i)
         nm = 512 // ls
-        perlin = PerlinNoise(seed=698 + i, lattice_size=ls, nmap=max(1, nm))
+        perlin = PerlinNoise(seed=seed_ + i * 11, lattice_size=ls, nmap=max(1, nm))
         ret.append(perlin)
     return ret
 
